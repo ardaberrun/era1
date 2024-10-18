@@ -1,0 +1,57 @@
+version: '3'
+services:
+  user-service:
+    build: ./user-service
+    ports:
+      - '4000:4000'
+    volumes:
+      - ./user-service:/app
+    networks:
+      - mynetwork
+    depends_on:
+      - user-db
+
+  user-db:
+    image: mongo:5
+    ports:
+      - '27018:27017'
+    volumes:
+      - user-data:/data/db
+    networks:
+      - mynetwork
+
+  event-service:
+    build: ./event-service
+    ports:
+      - '4001:4001'
+    volumes:
+      - ./event-service:/app
+    networks:
+      - mynetwork
+    depends_on:
+      - event-db
+
+  event-db:
+    image: mongo:5
+    ports:
+      - '27019:27017'
+    volumes:
+      - event-data:/data/db
+    networks:
+      - mynetwork
+
+  frontend:
+    build: ./frontend
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./frontend:/app
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+
+volumes:
+  user-data:
+  event-data:
